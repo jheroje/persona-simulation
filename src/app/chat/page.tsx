@@ -33,7 +33,7 @@ export default async function SimulationsPage() {
       {activeSimulation ? (
         <ChatInterface initialSimulation={activeSimulation} />
       ) : (
-        <div className="flex flex-col items-center justify-center h-96 border-2 border-dashed rounded-lg p-10">
+        <div className="flex flex-col items-center justify-center h-[80vh] border-2 border-dashed rounded-lg p-10">
           <p className="text-xl mb-6 text-gray-600">
             You don't have an active simulation running.
           </p>

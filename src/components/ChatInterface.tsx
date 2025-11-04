@@ -46,6 +46,7 @@ export default function ChatInterface({
 
       const full = personaMessage.content;
       const personaShell = { ...personaMessage, content: '' };
+
       setMessages((prev) => [...prev, personaShell]);
 
       const stepMs = 15;
@@ -70,7 +71,7 @@ export default function ChatInterface({
   const scenarioSubject = initialSimulation.scenarioContext.subject;
 
   return (
-    <div className="flex flex-col h-[70vh] bg-white border rounded-lg shadow-lg">
+    <div className="flex flex-col h-[80vh] bg-white border rounded-lg shadow-lg">
       <div className="flex flex-row justify-between p-4 bg-gray-100 border-b">
         <div>
           <h3 className="font-semibold text-lg text-gray-800">{personaName}</h3>
@@ -110,13 +111,6 @@ export default function ChatInterface({
             </div>
           </div>
         ))}
-        {isProcessing && (
-          <div className="flex justify-start">
-            <div className="max-w-xs p-3 rounded-xl bg-gray-200 text-gray-800 rounded-bl-none animate-pulse">
-              Persona is typing...
-            </div>
-          </div>
-        )}
         <div ref={endRef} />
       </div>
 

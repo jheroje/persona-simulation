@@ -34,7 +34,7 @@ export default function EndSimulationButton({ simulationId }: ButtonProps) {
     <button
       onClick={handleStartSimulation}
       disabled={isLoading}
-      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg disabled:opacity-50 transition-colors"
+      className="bg-blue-600 hover:bg-blue-700  text-white font-bold py-3 px-6 rounded-lg text-lg disabled:opacity-50 transition-colors cursor-pointer"
     >
       {isLoading ? 'Ending...' : 'End Simulation'}
     </button>
