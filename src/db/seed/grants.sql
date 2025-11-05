@@ -1,3 +1,6 @@
-GRANT usage ON SCHEMA public TO authenticated, anon;
-GRANT all privileges ON all tables IN SCHEMA public TO authenticated, anon;
-GRANT all privileges ON all sequences IN SCHEMA public TO authenticated, anon;
+GRANT USAGE ON SCHEMA public TO authenticated, anon;
+
+GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO authenticated;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT, INSERT, UPDATE ON TABLES TO authenticated;
