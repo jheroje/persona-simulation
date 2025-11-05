@@ -49,7 +49,7 @@ export default function Login() {
         />
         <button
           type="submit"
-          className="bg-green-600 text-white p-3 rounded-md font-semibold"
+          className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-md font-semibold cursor-pointer"
         >
           Log In
         </button>

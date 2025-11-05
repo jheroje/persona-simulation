@@ -77,7 +77,7 @@ export default function Signup() {
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white p-3 rounded-md font-semibold"
+          className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-md font-semibold cursor-pointer"
         >
           Create Account
         </button>

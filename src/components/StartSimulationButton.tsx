@@ -39,7 +39,7 @@ export default function StartSimulationButton({ userId }: ButtonProps) {
     <button
       onClick={handleStartSimulation}
       disabled={isLoading}
-      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg disabled:opacity-50 transition-colors cursor-pointer"
+      className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg text-lg disabled:opacity-50 transition-colors cursor-pointer"
     >
       {isLoading ? 'Starting...' : 'Start New Simulation'}
     </button>

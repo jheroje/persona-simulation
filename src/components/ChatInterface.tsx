@@ -14,9 +14,9 @@ function TraitBar({ trait, value }: { trait: string; value: number }) {
   return (
     <div className="flex items-center gap-2 text-xs">
       <span className="w-2 text-gray-300">{trait}:</span>
-      <div className="w-50 h-1.5 bg-gray-600 rounded overflow-hidden">
+      <div className="w-50 h-1.5 bg-neutral-600 rounded overflow-hidden">
         <div
-          className="h-full bg-blue-500 rounded"
+          className="h-full bg-teal-500 rounded"
           style={{ width: `${value}%` }}
         />
       </div>
@@ -49,7 +49,7 @@ function PersonaDetails({
 
 function ScenarioTag({ text }: { text: string }) {
   return (
-    <span className="px-2 py-0.5 bg-gray-600 rounded-full text-xs text-gray-200">
+    <span className="px-2 py-0.5 bg-neutral-600 rounded-full text-xs text-gray-200">
       {text}
     </span>
   );
@@ -112,8 +112,8 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
   };
 
   return (
-    <div className="flex flex-col h-[80vh] bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
-      <div className="flex items-center justify-between p-4 bg-gray-700 border-b border-gray-700">
+    <div className="flex flex-col h-[80vh] bg-neutral-800 border border-gray-600 rounded-lg shadow-lg">
+      <div className="flex items-center justify-between p-4 bg-neutral-700 border-b border-gray-700">
         <div className="flex items-center gap-4">
           <div>
             <Tooltip
@@ -126,9 +126,15 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
               <PersonaDetails persona={simulation.persona} />
             </Tooltip>
             <div className="flex gap-2 mt-1">
-              <ScenarioTag text={`#${simulation.scenarioContext.callId}`} />
-              <ScenarioTag text={simulation.scenarioContext.service} />
-              <ScenarioTag text={simulation.scenarioContext.subject} />
+              <ScenarioTag
+                text={`Call ID: ${simulation.scenarioContext.callId}`}
+              />
+              <ScenarioTag
+                text={`Service: ${simulation.scenarioContext.service}`}
+              />
+              <ScenarioTag
+                text={`Subject: ${simulation.scenarioContext.subject}`}
+              />
             </div>
           </div>
         </div>
@@ -160,8 +166,8 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
             <div
               className={`max-w-xs p-3 rounded-xl ${
                 msg.sender === 'user'
-                  ? 'bg-blue-500 text-gray-100 rounded-br-none'
-                  : 'bg-gray-600 text-gray-100 rounded-bl-none'
+                  ? 'bg-teal-500 text-gray-100 rounded-br-none'
+                  : 'bg-neutral-600 text-gray-100 rounded-bl-none'
               }`}
             >
               {msg.content}
@@ -181,12 +187,12 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your user response..."
           disabled={isProcessing}
-          className="flex-1 p-3 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-700 placeholder-gray-400"
+          className="flex-1 p-3 border border-gray-600 bg-neutral-700 text-gray-100 rounded-lg focus:ring-teal-500 focus:border-teal-500 disabled:bg-neutral-700 placeholder-gray-400"
         />
         <button
           type="submit"
           disabled={isProcessing}
-          className="bg-blue-600 hover:bg-blue-700 text-gray-100 font-bold py-3 px-6 rounded-lg disabled:opacity-50"
+          className="bg-teal-500 hover:bg-teal-600 text-gray-100 font-bold py-3 px-6 rounded-lg disabled:opacity-50"
         >
           Send
         </button>
