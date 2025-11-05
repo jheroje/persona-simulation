@@ -12,9 +12,9 @@ interface ChatInterfaceProps {
 
 function TraitBar({ trait, value }: { trait: string; value: number }) {
   return (
-    <div className="flex items-center gap-2 text-xs">
-      <span className="w-2 text-gray-300">{trait}:</span>
-      <div className="w-50 h-1.5 bg-neutral-600 rounded overflow-hidden">
+    <div className="flex items-center gap-2 text-xs w-70">
+      <span className="w-30 text-gray-300">{trait}</span>
+      <div className="w-32 h-1.5 bg-neutral-600 rounded overflow-hidden">
         <div
           className="h-full bg-teal-500 rounded"
           style={{ width: `${value}%` }}
@@ -31,17 +31,20 @@ function PersonaDetails({
   persona: SimulationWithPersonaAndMessages['persona'];
 }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 w-70">
       <div className="font-bold text-gray-300">
         <p>Role: {persona.role}</p>
         <p>Tone: {persona.tone}</p>
       </div>
       <div className="grid grid-cols-1 gap-1">
-        <TraitBar trait="O" value={persona.oceanOpenness} />
-        <TraitBar trait="C" value={persona.oceanConscientiousness} />
-        <TraitBar trait="E" value={persona.oceanExtraversion} />
-        <TraitBar trait="A" value={persona.oceanAgreeableness} />
-        <TraitBar trait="N" value={persona.oceanNeuroticism} />
+        <TraitBar trait="Openness" value={persona.oceanOpenness} />
+        <TraitBar
+          trait="Conscientiousness"
+          value={persona.oceanConscientiousness}
+        />
+        <TraitBar trait="Extraversion" value={persona.oceanExtraversion} />
+        <TraitBar trait="Agreeableness" value={persona.oceanAgreeableness} />
+        <TraitBar trait="Neuroticism" value={persona.oceanNeuroticism} />
       </div>
     </div>
   );
