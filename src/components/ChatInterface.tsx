@@ -12,9 +12,9 @@ interface ChatInterfaceProps {
 
 function TraitBar({ trait, value }: { trait: string; value: number }) {
   return (
-    <div className="flex items-center gap-2 text-xs w-70">
+    <div className="flex items-center gap-2 text-xs w-80">
       <span className="w-30 text-gray-300 font-bold">{trait}</span>
-      <div className="w-32 h-1.5 bg-neutral-600 rounded overflow-hidden">
+      <div className="w-42 h-1.5 bg-neutral-600 rounded overflow-hidden">
         <div
           className="h-full bg-teal-500 rounded"
           style={{ width: `${value}%` }}
@@ -31,7 +31,7 @@ function PersonaDetails({
   persona: SimulationWithPersonaAndMessages['persona'];
 }) {
   return (
-    <div className="space-y-2 w-70">
+    <div className="space-y-2 w-80">
       <div className="font-bold text-gray-300">
         <p>Role: {persona.role}</p>
         <p>Tone: {persona.tone}</p>

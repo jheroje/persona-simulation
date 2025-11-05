@@ -38,7 +38,7 @@ export default function SignOutButton() {
   return (
     <button
       onClick={handleSignOut}
-      className="px-3 py-1 rounded text-white bg-rose-500 hover:bg-rose-600"
+      className="px-3 py-1 rounded text-white bg-rose-500 hover:bg-rose-600 cursor-pointer"
       aria-label="Sign out"
     >
       Sign out
