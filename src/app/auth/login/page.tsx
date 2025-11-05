@@ -28,42 +28,44 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col space-y-4 max-w-sm mx-auto p-8 border rounded-lg shadow-xl mt-10">
-      <h2 className="text-2xl font-bold text-center">Log In</h2>
-      <form onSubmit={handleLogIn} className="flex flex-col space-y-3">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-          className="p-2 border rounded"
-        />
-        <button
-          type="submit"
-          className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-md font-semibold cursor-pointer"
-        >
-          Log In
-        </button>
-      </form>
-      <div className="text-center text-sm">
-        <p>
-          New user?{' '}
-          <Link
-            href="/auth/signup"
-            className="text-blue-600 hover:underline font-medium"
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="flex flex-col space-y-4 p-8 border rounded-lg shadow-xl w-100">
+        <h2 className="text-2xl font-bold text-center">Log In</h2>
+        <form onSubmit={handleLogIn} className="flex flex-col space-y-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required
+            className="p-2 border rounded"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+            className="p-2 border rounded"
+          />
+          <button
+            type="submit"
+            className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-md font-semibold cursor-pointer"
           >
-            Create an account
-          </Link>
-        </p>
+            Log In
+          </button>
+        </form>
+        <div className="text-center text-sm">
+          <p>
+            New user?{' '}
+            <Link
+              href="/auth/signup"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              Create an account
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
