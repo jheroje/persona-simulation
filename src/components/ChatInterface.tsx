@@ -115,8 +115,8 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
   };
 
   return (
-    <div className="flex flex-col h-[80vh] bg-neutral-800 border border-gray-600 rounded-lg shadow-lg">
-      <div className="flex items-center justify-between p-4 bg-neutral-700 border-b border-gray-700">
+    <div className="flex flex-col h-[85vh] bg-neutral-800 border border-gray-600 rounded-lg shadow-lg">
+      <div className="flex items-center justify-between p-4 bg-neutral-700 border-b border-gray-700 rounded-t-lg">
         <div className="flex items-center gap-4">
           <div>
             <Tooltip
