@@ -13,7 +13,7 @@ interface ChatInterfaceProps {
 function TraitBar({ trait, value }: { trait: string; value: number }) {
   return (
     <div className="flex items-center gap-2 text-xs w-70">
-      <span className="w-30 text-gray-300">{trait}</span>
+      <span className="w-30 text-gray-300 font-bold">{trait}</span>
       <div className="w-32 h-1.5 bg-neutral-600 rounded overflow-hidden">
         <div
           className="h-full bg-teal-500 rounded"
@@ -52,7 +52,7 @@ function PersonaDetails({
 
 function ScenarioTag({ text }: { text: string }) {
   return (
-    <span className="px-2 py-0.5 bg-neutral-600 rounded-full text-xs text-gray-200">
+    <span className="px-2 py-0.5 bg-neutral-600 rounded-full text-xs text-gray-200 font-bold">
       {text}
     </span>
   );
