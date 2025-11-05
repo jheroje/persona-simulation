@@ -3,6 +3,13 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 
 type ToastType = 'success' | 'error' | 'info';
+
+const ToastTypeColors: Record<ToastType, string> = {
+  success: 'bg-green-600',
+  error: 'bg-red-600',
+  info: 'bg-sky-600',
+};
+
 type Toast = { id: string; message: string; type: ToastType };
 
 const ToastContext = createContext<{
@@ -25,18 +32,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
-        {toasts.map((t) => {
-          const base =
-            'px-4 py-2 rounded shadow-md text-white max-w-sm break-words';
-          const cls =
-            t.type === 'success'
-              ? 'bg-green-600'
-              : t.type === 'error'
-              ? 'bg-red-600'
-              : 'bg-sky-600';
+        {toasts.map(({ id, message, type }) => {
           return (
-            <div key={t.id} className={`${base} ${cls}`}>
-              {t.message}
+            <div
+              key={id}
+              className={`px-4 py-2 rounded shadow-md text-white max-w-sm wrap-break-word ${ToastTypeColors[type]}`}
+            >
+              {message}
             </div>
           );
         })}

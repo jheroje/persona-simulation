@@ -7,14 +7,15 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const router = useRouter();
   const supabase = clientSupabase();
   const showToast = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogIn = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -57,7 +58,7 @@ export default function Login() {
         </form>
         <div className="text-center text-sm">
           <p>
-            New user?{' '}
+            New user?
             <Link
               href="/auth/signup"
               className="text-blue-600 hover:underline font-medium"

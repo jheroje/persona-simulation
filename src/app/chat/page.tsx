@@ -9,14 +9,12 @@ export default async function SimulationsPage() {
   const user = await getUser();
 
   if (!user) {
-    return <p>Loading or redirecting to login...</p>;
+    return <p>Redirecting to login...</p>;
   }
-
-  const userId = user.id;
 
   const activeSimulation = await db.query.simulations.findFirst({
     where: and(
-      eq(simulations.userId, userId),
+      eq(simulations.userId, user.id),
       eq(simulations.status, 'active')
     ),
     orderBy: [desc(simulations.createdAt)],
@@ -37,7 +35,7 @@ export default async function SimulationsPage() {
           <p className="text-xl mb-6 text-gray-600">
             {"You don't have an active simulation running."}
           </p>
-          <StartSimulationButton userId={userId} />
+          <StartSimulationButton userId={user.id} />
         </div>
       )}
     </div>

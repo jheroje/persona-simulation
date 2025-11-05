@@ -59,12 +59,7 @@ function ScenarioTag({ text }: { text: string }) {
 }
 
 export default function ChatInterface({ simulation }: ChatInterfaceProps) {
-  const [messages, setMessages] = useState<Message[]>(
-    [...(simulation.messages || [])].sort(
-      (a, b) =>
-        new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
-    )
-  );
+  const [messages, setMessages] = useState<Message[]>(simulation.messages);
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +71,7 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!input.trim() || isProcessing) return;
 
     const text = input.trim();

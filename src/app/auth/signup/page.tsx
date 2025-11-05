@@ -7,12 +7,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function Signup() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
   const router = useRouter();
   const supabase = clientSupabase();
   const showToast = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -6,22 +6,20 @@ import { eq, sql } from 'drizzle-orm';
 
 export async function startNewSimulation(userId: string) {
   try {
-    const randomPersona = await db
+    const [randomPersona] = await db
       .select()
       .from(personas)
       .orderBy(sql`random()`)
       .limit(1);
 
-    const persona = randomPersona[0];
-
-    if (!persona) {
+    if (!randomPersona) {
       return { success: false, error: 'No personas available' };
     }
 
     const scenario =
-      persona.scenarios?.length > 0
-        ? persona.scenarios[
-            Math.floor(Math.random() * persona.scenarios.length)
+      randomPersona.scenarios?.length > 0
+        ? randomPersona.scenarios[
+            Math.floor(Math.random() * randomPersona.scenarios.length)
           ]
         : undefined;
     if (!scenario) {
@@ -35,7 +33,7 @@ export async function startNewSimulation(userId: string) {
       .insert(simulations)
       .values({
         userId,
-        personaId: persona.id,
+        personaId: randomPersona.id,
         scenarioContext: scenario,
         status: 'active',
       })

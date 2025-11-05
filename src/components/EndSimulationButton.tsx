@@ -10,9 +10,9 @@ interface ButtonProps {
 }
 
 export default function EndSimulationButton({ simulationId }: ButtonProps) {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const showToast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleStartSimulation = async () => {
     setIsLoading(true);

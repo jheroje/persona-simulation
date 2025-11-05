@@ -101,7 +101,7 @@ export const simulations = pgTable('simulations', {
     .references(() => personas.id, { onDelete: 'cascade' })
     .notNull(),
   scenarioContext: jsonb('scenario_context').$type<Scenario>().notNull(),
-  status: text('status').notNull(),
+  status: text('status').$type<SimulationStatus>().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -201,6 +201,7 @@ export type Scenario = {
 };
 
 export type MessageSender = 'user' | 'persona';
+export type SimulationStatus = 'active' | 'inactive';
 
 export type Profile = InferSelectModel<typeof profiles>;
 export type Persona = InferSelectModel<typeof personas>;

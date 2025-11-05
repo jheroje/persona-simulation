@@ -7,8 +7,8 @@ import { User } from '@supabase/supabase-js';
 
 export default function SignOutButton() {
   const supabase = clientSupabase();
-  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     let mounted = true;
