@@ -392,7 +392,7 @@ export const personasSeed: NewPersona[] = [
             {
               triggers: ['yes', 'please', 'sure', 'ok', 'okay'],
               response:
-                'Alright, based on the route, it should arrive by the end of the week. Sound good?',
+                'Alright, based on the route, it should arrive by the end of the week. Sounds good?',
             },
             {
               triggers: ['good', 'fine', 'works', 'sounds good'],
