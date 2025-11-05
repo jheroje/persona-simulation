@@ -14,13 +14,13 @@ function TraitBar({ trait, value }: { trait: string; value: number }) {
   return (
     <div className="flex items-center gap-2 text-xs w-80">
       <span className="w-30 text-gray-300 font-bold">{trait}</span>
-      <div className="w-42 h-1.5 bg-neutral-600 rounded overflow-hidden">
+      <div className="w-40 h-1.5 bg-neutral-600 rounded overflow-hidden">
         <div
           className="h-full bg-teal-500 rounded"
           style={{ width: `${value}%` }}
         />
       </div>
-      <span className="w-8 text-gray-400">{value}%</span>
+      <span className="w-10 text-gray-400">{value}%</span>
     </div>
   );
 }
