@@ -3,6 +3,7 @@
 import { startNewSimulation } from '@/app/chat/actions';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useToast } from './ToastProvider';
 
 interface ButtonProps {
   userId: string;
@@ -11,6 +12,7 @@ interface ButtonProps {
 export default function StartSimulationButton({ userId }: ButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const showToast = useToast();
 
   const handleStartSimulation = async () => {
     setIsLoading(true);
@@ -20,11 +22,14 @@ export default function StartSimulationButton({ userId }: ButtonProps) {
       if (result.success) {
         router.refresh();
       } else {
-        alert(`Failed to start simulation: ${result.error}`);
+        showToast(`Failed to start simulation: ${result.error}`, 'error');
       }
     } catch (error) {
       console.error(error);
-      alert('An unexpected error occurred while starting the simulation.');
+      showToast(
+        'An unexpected error occurred while starting the simulation.',
+        'error'
+      );
     } finally {
       setIsLoading(false);
     }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useToast } from '@/components/ToastProvider';
 import { clientSupabase } from '@/db/supabase/client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -10,8 +11,9 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const supabase = clientSupabase();
+  const showToast = useToast();
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleLogIn = async (e: React.FormEvent) => {
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -21,14 +23,14 @@ export default function Login() {
     if (!error) {
       router.push('/');
     } else {
-      alert(`Sign-in failed: ${error.message}`);
+      showToast(`Log in failed: ${error.message}`, 'error');
     }
   };
 
   return (
     <div className="flex flex-col space-y-4 max-w-sm mx-auto p-8 border rounded-lg shadow-xl mt-10">
-      <h2 className="text-2xl font-bold text-center">Sign In</h2>
-      <form onSubmit={handleSignIn} className="flex flex-col space-y-3">
+      <h2 className="text-2xl font-bold text-center">Log In</h2>
+      <form onSubmit={handleLogIn} className="flex flex-col space-y-3">
         <input
           type="email"
           value={email}

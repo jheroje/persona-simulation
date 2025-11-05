@@ -2,7 +2,7 @@
 
 import { sendMessage } from '@/app/chat/actions';
 import { Message, SimulationWithPersonaAndMessages } from '@/db/drizzle/schema';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import EndSimulationButton from './EndSimulationButton';
 
 interface ChatInterfaceProps {
@@ -71,25 +71,25 @@ export default function ChatInterface({
   const scenarioSubject = initialSimulation.scenarioContext.subject;
 
   return (
-    <div className="flex flex-col h-[80vh] bg-white border rounded-lg shadow-lg">
-      <div className="flex flex-row justify-between p-4 bg-gray-100 border-b">
+    <div className="flex flex-col h-[80vh] bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
+      <div className="flex flex-row justify-between p-4 bg-gray-700 border-b border-gray-700">
         <div>
-          <h3 className="font-semibold text-lg text-gray-800">{personaName}</h3>
-          <p className="text-sm text-gray-500">Scenario: {scenarioSubject}</p>
+          <h3 className="font-semibold text-lg text-gray-100">{personaName}</h3>
+          <p className="text-sm text-gray-400">Scenario: {scenarioSubject}</p>
         </div>
 
         <EndSimulationButton simulationId={initialSimulation.id} />
       </div>
 
       {error && (
-        <div className="px-4 py-2 text-sm text-red-800 bg-red-100 border-b border-red-200">
+        <div className="px-4 py-2 text-sm text-red-200 bg-red-900/50 border-b border-red-700">
           {error}
         </div>
       )}
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
-          <p className="text-center text-gray-400">
+          <p className="text-center text-gray-500">
             Chat loaded, awaiting first message...
           </p>
         )}
@@ -103,8 +103,8 @@ export default function ChatInterface({
             <div
               className={`max-w-xs p-3 rounded-xl ${
                 msg.sender === 'user'
-                  ? 'bg-blue-500 text-white rounded-br-none'
-                  : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                  ? 'bg-blue-500 text-gray-100 rounded-br-none'
+                  : 'bg-gray-600 text-gray-100 rounded-bl-none'
               }`}
             >
               {msg.content}
@@ -116,7 +116,7 @@ export default function ChatInterface({
 
       <form
         onSubmit={handleSendMessage}
-        className="p-4 border-t flex space-x-2"
+        className="p-4 border-t border-gray-700 flex space-x-2"
       >
         <input
           type="text"
@@ -124,12 +124,12 @@ export default function ChatInterface({
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your user response..."
           disabled={isProcessing}
-          className="flex-1 p-3 border text-gray-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
+          className="flex-1 p-3 border border-gray-600 bg-gray-700 text-gray-100 rounded-lg focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-700 placeholder-gray-400"
         />
         <button
           type="submit"
           disabled={isProcessing}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50"
+          className="bg-blue-600 hover:bg-blue-700 text-gray-100 font-bold py-3 px-6 rounded-lg disabled:opacity-50"
         >
           Send
         </button>

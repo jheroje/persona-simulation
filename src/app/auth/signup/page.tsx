@@ -1,5 +1,6 @@
 'use client';
 
+import { useToast } from '@/components/ToastProvider';
 import { clientSupabase } from '@/db/supabase/client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,6 +12,7 @@ export default function Signup() {
   const [username, setUsername] = useState('');
   const router = useRouter();
   const supabase = clientSupabase();
+  const showToast = useToast();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,31 +26,24 @@ export default function Signup() {
     });
 
     if (signUpError) {
-      return alert(`Sign-up failed: ${signUpError.message}`);
+      return showToast(`Sign-up failed: ${signUpError.message}`, 'error');
     }
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
     if (user) {
-      if (!session) {
-        return alert('User must confirm email before being authenticated.');
-      }
-
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({ user_id: user.id, username: username });
 
       if (profileError) {
         await supabase.auth.signOut();
-        return alert(
-          `Profile creation failed. Please try signing up again. (${profileError.message})`
+        return showToast(
+          `Profile creation failed. Please try signing up again. (${profileError.message})`,
+          'error'
         );
       }
     }
 
-    alert('Sign-up successful! You are now logged in.');
+    showToast('Sign-up successful! You are now logged in.', 'success');
     router.push('/chat');
   };
 
@@ -93,7 +88,7 @@ export default function Signup() {
           href="/auth/login"
           className="text-blue-600 hover:underline font-medium"
         >
-          Sign In
+          Log In
         </Link>
       </div>
     </div>
