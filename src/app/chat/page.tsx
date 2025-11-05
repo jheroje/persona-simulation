@@ -31,7 +31,7 @@ export default async function SimulationsPage() {
       <h1 className="text-3xl font-bold mb-4">Persona Simulations</h1>
 
       {activeSimulation ? (
-        <ChatInterface initialSimulation={activeSimulation} />
+        <ChatInterface simulation={activeSimulation} />
       ) : (
         <div className="flex flex-col items-center justify-center h-[80vh] border-2 rounded-lg p-10">
           <p className="text-xl mb-6 text-gray-600">

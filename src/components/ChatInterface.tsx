@@ -4,16 +4,60 @@ import { sendMessage } from '@/app/chat/actions';
 import { Message, SimulationWithPersonaAndMessages } from '@/db/drizzle/schema';
 import { useLayoutEffect, useRef, useState } from 'react';
 import EndSimulationButton from './EndSimulationButton';
+import { Tooltip } from './Tooltip';
 
 interface ChatInterfaceProps {
-  initialSimulation: SimulationWithPersonaAndMessages;
+  simulation: SimulationWithPersonaAndMessages;
 }
 
-export default function ChatInterface({
-  initialSimulation,
-}: ChatInterfaceProps) {
+function TraitBar({ trait, value }: { trait: string; value: number }) {
+  return (
+    <div className="flex items-center gap-2 text-xs">
+      <span className="w-2 text-gray-300">{trait}:</span>
+      <div className="w-50 h-1.5 bg-gray-600 rounded overflow-hidden">
+        <div
+          className="h-full bg-blue-500 rounded"
+          style={{ width: `${value}%` }}
+        />
+      </div>
+      <span className="w-8 text-gray-400">{value}%</span>
+    </div>
+  );
+}
+
+function PersonaDetails({
+  persona,
+}: {
+  persona: SimulationWithPersonaAndMessages['persona'];
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="font-bold text-gray-300">
+        <p>Role: {persona.role}</p>
+        <p>Tone: {persona.tone}</p>
+      </div>
+      <div className="grid grid-cols-1 gap-1">
+        <TraitBar trait="O" value={persona.oceanOpenness} />
+        <TraitBar trait="C" value={persona.oceanConscientiousness} />
+        <TraitBar trait="E" value={persona.oceanExtraversion} />
+        <TraitBar trait="A" value={persona.oceanAgreeableness} />
+        <TraitBar trait="N" value={persona.oceanNeuroticism} />
+      </div>
+    </div>
+  );
+}
+
+function ScenarioTag({ text }: { text: string }) {
+  return (
+    <span className="px-2 py-0.5 bg-gray-600 rounded-full text-xs text-gray-200">
+      {text}
+    </span>
+  );
+}
+
+export default function ChatInterface({ simulation }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>(
-    [...(initialSimulation.messages || [])].sort(
+    [...(simulation.messages || [])].sort(
       (a, b) =>
         new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
     )
@@ -38,7 +82,7 @@ export default function ChatInterface({
 
     try {
       const { userMessage, personaMessage } = await sendMessage(
-        initialSimulation.id,
+        simulation.id,
         text
       );
 
@@ -67,18 +111,31 @@ export default function ChatInterface({
     }
   };
 
-  const personaName = initialSimulation.persona.name || 'Unknown Persona';
-  const scenarioSubject = initialSimulation.scenarioContext.subject;
-
   return (
     <div className="flex flex-col h-[80vh] bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
-      <div className="flex flex-row justify-between p-4 bg-gray-700 border-b border-gray-700">
-        <div>
-          <h3 className="font-semibold text-lg text-gray-100">{personaName}</h3>
-          <p className="text-sm text-gray-400">Scenario: {scenarioSubject}</p>
+      <div className="flex items-center justify-between p-4 bg-gray-700 border-b border-gray-700">
+        <div className="flex items-center gap-4">
+          <div>
+            <Tooltip
+              trigger={
+                <h3 className="font-semibold text-lg text-gray-100 cursor-pointer">
+                  {simulation.persona.name || 'Unknown Persona'}
+                </h3>
+              }
+            >
+              <PersonaDetails persona={simulation.persona} />
+            </Tooltip>
+            <div className="flex gap-2 mt-1">
+              <ScenarioTag text={`#${simulation.scenarioContext.callId}`} />
+              <ScenarioTag text={simulation.scenarioContext.service} />
+              <ScenarioTag text={simulation.scenarioContext.subject} />
+            </div>
+          </div>
         </div>
 
-        <EndSimulationButton simulationId={initialSimulation.id} />
+        <div className="flex items-center gap-4">
+          <EndSimulationButton simulationId={simulation.id} />
+        </div>
       </div>
 
       {error && (
