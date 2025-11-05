@@ -8,10 +8,10 @@ export async function proxy(req: NextRequest) {
   const supabase = proxySupabase(req, res);
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = '/auth/login';
     redirectUrl.searchParams.set('redirectedFrom', pathname);

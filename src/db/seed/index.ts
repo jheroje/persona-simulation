@@ -20,6 +20,6 @@ async function seedPersonas() {
   }
 }
 
-seedPersonas().catch((err) => {
+seedPersonas().catch(() => {
   process.exit(1);
 });

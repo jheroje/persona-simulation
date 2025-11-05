@@ -2,17 +2,17 @@ import ChatInterface from '@/components/ChatInterface';
 import StartSimulationButton from '@/components/StartSimulationButton';
 import { db } from '@/db/drizzle';
 import { messages as messagesTable, simulations } from '@/db/drizzle/schema';
-import { getSession } from '@/db/supabase/server';
+import { getUser } from '@/db/supabase/server';
 import { and, asc, desc, eq } from 'drizzle-orm';
 
 export default async function SimulationsPage() {
-  const session = await getSession();
+  const user = await getUser();
 
-  if (!session) {
+  if (!user) {
     return <p>Loading or redirecting to login...</p>;
   }
 
-  const userId = session.user.id;
+  const userId = user.id;
 
   const activeSimulation = await db.query.simulations.findFirst({
     where: and(
@@ -35,7 +35,7 @@ export default async function SimulationsPage() {
       ) : (
         <div className="flex flex-col items-center justify-center h-[85vh] border-2 rounded-lg p-10">
           <p className="text-xl mb-6 text-gray-600">
-            You don't have an active simulation running.
+            {"You don't have an active simulation running."}
           </p>
           <StartSimulationButton userId={userId} />
         </div>

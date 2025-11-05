@@ -22,13 +22,13 @@ export const serverSupabase = async () => {
   );
 };
 
-export async function getSession() {
+export async function getUser() {
   const supabase = await serverSupabase();
   try {
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    return session;
+      data: { user },
+    } = await supabase.auth.getUser();
+    return user;
   } catch (error) {
     console.error('Error fetching session:', error);
     return null;

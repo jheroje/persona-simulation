@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { clientSupabase } from '@/db/supabase/client';
+import { User } from '@supabase/supabase-js';
 
 export default function SignOutButton() {
   const supabase = clientSupabase();
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
