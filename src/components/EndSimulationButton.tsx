@@ -79,12 +79,16 @@ export default function EndSimulationButton({
           <div className="absolute inset-0 bg-black/60" />
           <div className="relative bg-neutral-800 text-gray-100 rounded-lg p-6 w-[520px] shadow-lg z-10">
             <h2 className="text-2xl font-bold mb-4">Simulation Assessment</h2>
-            <p className="mb-2">
-              <span>
-                <span className="font-semibold">Score: </span>
-                {assessment.score}
-              </span>
-            </p>
+            <div className="mb-2 flex items-center gap-4">
+              <span className="font-semibold">Score: </span>
+              <div className="w-60 h-2.5 bg-neutral-600 rounded overflow-hidden">
+                <div
+                  className="h-full bg-teal-500 rounded"
+                  style={{ width: `${assessment.score}%` }}
+                />
+              </div>
+              <span className="w-10 text-gray-400">{assessment.score}%</span>
+            </div>
             <p className="mb-2">
               <span>
                 <span className="font-semibold">Feedback: </span>
