@@ -33,7 +33,7 @@ export default async function SimulationsPage() {
       ) : (
         <div className="flex flex-col items-center justify-center h-[85vh] border-2 rounded-lg p-10">
           <p className="text-xl mb-6 text-gray-600">
-            {"You don't have an active simulation running."}
+            You don't have an active simulation running.
           </p>
           <StartSimulationButton userId={user.id} />
         </div>

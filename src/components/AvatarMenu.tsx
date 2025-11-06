@@ -72,9 +72,9 @@ export default function AvatarMenu() {
 
               return (
                 <Tooltip
+                  key={index}
                   trigger={
                     <Image
-                      key={index}
                       src={`/achievement-badge-${
                         userEarned ? 'earned' : 'unearned'
                       }.svg`}

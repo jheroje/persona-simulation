@@ -1,0 +1,1 @@
+ALTER TABLE "assessments" ALTER COLUMN "criteria_feedback" SET DATA TYPE text;

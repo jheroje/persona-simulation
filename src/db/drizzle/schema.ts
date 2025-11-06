@@ -173,7 +173,7 @@ export const assessments = pgTable(
       .notNull(),
     score: smallint('score').notNull(),
     timeToResolve: interval('time_to_resolve').notNull(),
-    criteriaFeedback: jsonb('criteria_feedback').notNull(),
+    criteriaFeedback: text('criteria_feedback').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -274,7 +274,6 @@ export type Scenario = {
   };
 };
 
-// MODEL TYPES
 export type MessageSender = 'user' | 'persona';
 export type SimulationStatus = 'active' | 'inactive';
 
