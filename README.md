@@ -91,10 +91,10 @@ npm run dev
 
 ## Personas and scenarios
 
-| Persona       | Role                            | Tone                   | Description                                                                                  |
+| Persona       | Role                            | Tone                   | Description of personality and scenarios                                                     |
 | :------------ | :------------------------------ | :--------------------- | :------------------------------------------------------------------------------------------- |
-| John Doe      | Customer Service Representative | Friendly and practical | Support person for billing issues and information requests. Helps the user.                  |
-| Jane Smith    | Technical Support Specialist    | Calm and analytical    | Technical person for connection and performance issues. Helps the user.                      |
+| John Doe      | Customer Service Representative | Friendly and practical | Support person for billing issues, appointments and information requests. Helps the user.    |
+| Jane Smith    | Technical Support Specialist    | Calm and analytical    | Technical person for connection, accounts and performance issues. Helps the user.            |
 | Lisa Peterson | Customer                        | Anxious and reactive   | Customer that asks for refunds, delays and other order/shipment issues. The user helps Lisa. |
 
 ## Implemented extension
