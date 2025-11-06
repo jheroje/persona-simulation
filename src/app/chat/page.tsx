@@ -26,7 +26,7 @@ export default async function SimulationsPage() {
 
   return (
     <div className="flex flex-col h-full p-6">
-      <h1 className="text-3xl font-bold mb-4">Persona Simulations</h1>
+      <h1 className="text-3xl font-bold mb-4">Persona Simulation</h1>
 
       {activeSimulation ? (
         <ChatInterface simulation={activeSimulation} />
