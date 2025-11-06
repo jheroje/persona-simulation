@@ -55,12 +55,12 @@ export default function AvatarMenu() {
       <div
         className={`${
           isOpen ? 'visible' : 'invisible'
-        } absolute right-0 w-48 bg-neutral-800 rounded-lg shadow-xl border border-neutral-300 text-white mt-2`}
+        } absolute right-0 w-48 bg-neutral-800 rounded-lg shadow-xl border border-neutral-500 text-white mt-2`}
       >
-        <div className="px-4 py-2 border-b">
-          <p className="text-sm font-medium">{user.username}</p>
+        <div className="px-4 py-2 border-b border-neutral-500">
+          <p className="text-md font-bold">{user.username}</p>
         </div>
-        <div className="px-4 py-2 border-b">
+        <div className="px-4 py-2 border-b border-neutral-500">
           <p className="text-sm font-medium">Achievements</p>
           <div className="flex justify-start">
             {AchievementBadgeList.map((key, index) => {
