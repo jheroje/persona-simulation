@@ -91,10 +91,10 @@ function getCriteriaFeedback(triggeredCount: number, defaultCount: number) {
   }
 
   if (triggeredCount === 0) {
-    return `You did not trigger any response rules, and the persona responded with the default ${defaultCount} times.`;
+    return `You did not trigger any response rules, and the persona responded with the default response ${defaultCount} times.`;
   }
 
-  return `You triggered ${triggeredCount} response rules, but the persona responded with the default ${defaultCount} times.`;
+  return `You triggered ${triggeredCount} response rules, but the persona responded with the default response ${defaultCount} times.`;
 }
 
 function getScore(

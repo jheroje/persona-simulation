@@ -4,6 +4,7 @@ import { startNewSimulation } from '@/app/chat/actions';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useToast } from './ToastProvider';
+import { useLoading } from './LoadingProvider';
 
 interface ButtonProps {
   userId: string;
@@ -15,11 +16,13 @@ export default function StartSimulationButton({
   onStart,
 }: ButtonProps) {
   const router = useRouter();
+  const loadingOverlay = useLoading();
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleStartSimulation = async () => {
     setIsLoading(true);
+    loadingOverlay.show();
 
     if (!!onStart) onStart();
 
@@ -38,6 +41,7 @@ export default function StartSimulationButton({
         'error'
       );
     } finally {
+      loadingOverlay.hide();
       setIsLoading(false);
     }
   };

@@ -1,4 +1,5 @@
 import AvatarMenu from '@/components/AvatarMenu';
+import { LoadingProvider } from '@/components/LoadingProvider';
 import { ToastProvider } from '@/components/ToastProvider';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -33,7 +34,7 @@ export default function RootLayout({
           <header className="fixed top-5 right-5 z-50">
             <AvatarMenu />
           </header>
-          {children}
+          <LoadingProvider>{children}</LoadingProvider>
         </body>
       </html>
     </ToastProvider>

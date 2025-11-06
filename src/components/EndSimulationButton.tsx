@@ -8,6 +8,7 @@ import {
 } from '@/db/drizzle/schema';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useLoading } from './LoadingProvider';
 import StartSimulationButton from './StartSimulationButton';
 import { useToast } from './ToastProvider';
 import { Tooltip } from './Tooltip';
@@ -21,6 +22,7 @@ export default function EndSimulationButton({
   simulationId,
   userId,
 }: ButtonProps) {
+  const loadingOverlay = useLoading();
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [assessment, setAssessment] = useState<Assessment | null>(null);
@@ -28,6 +30,7 @@ export default function EndSimulationButton({
 
   const handleEndSimulation = async () => {
     setIsLoading(true);
+    loadingOverlay.show();
 
     try {
       const result = await endSimulation(simulationId, userId);
@@ -51,6 +54,7 @@ export default function EndSimulationButton({
         'error'
       );
     } finally {
+      loadingOverlay.hide();
       setIsLoading(false);
     }
   };
