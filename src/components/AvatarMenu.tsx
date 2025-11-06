@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  AchievementBadge,
   AchievementBadgeInfo,
   ProfileWithAchievements,
 } from '@/db/drizzle/schema';
@@ -51,59 +52,58 @@ export default function AvatarMenu() {
         </div>
       </button>
 
-      {isOpen && (
-        <div className="absolute right-0 w-48 bg-neutral-800 rounded-lg shadow-xl border border-neutral-300 text-white mt-2">
-          <div className="px-4 py-2 border-b">
-            <p className="text-sm font-medium">{user.username}</p>
-          </div>
-          <div className="px-4 py-2 border-b">
-            <p className="text-sm font-medium">Achievements</p>
-            <div className="flex justify-start">
-              {Object.keys(AchievementBadgeInfo).map((key, index) => {
-                const badgeInfo =
-                  AchievementBadgeInfo[
-                    key as keyof typeof AchievementBadgeInfo
-                  ];
-
-                const userEarned = user.achievements.find(
-                  (a) => a.badgeType === key
-                );
-
-                return (
-                  <Tooltip
-                    trigger={
-                      <Image
-                        key={index}
-                        src={`/achievement-badge-${
-                          userEarned ? 'earned' : 'unearned'
-                        }.svg`}
-                        alt={badgeInfo.description}
-                        width={32}
-                        height={32}
-                        className="cursor-pointer"
-                      />
-                    }
-                  >
-                    <p className="text-sm whitespace-nowrap">
-                      {badgeInfo.description}
-                    </p>
-                  </Tooltip>
-                );
-              })}
-            </div>
-          </div>
-          <button
-            onClick={async () => {
-              const supabase = clientSupabase();
-              await supabase.auth.signOut();
-              router.push('/login');
-            }}
-            className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-900 rounded-lg cursor-pointer"
-          >
-            Sign out
-          </button>
+      <div
+        className={`${
+          isOpen ? 'visible' : 'invisible'
+        } absolute right-0 w-48 bg-neutral-800 rounded-lg shadow-xl border border-neutral-300 text-white mt-2`}
+      >
+        <div className="px-4 py-2 border-b">
+          <p className="text-sm font-medium">{user.username}</p>
         </div>
-      )}
+        <div className="px-4 py-2 border-b">
+          <p className="text-sm font-medium">Achievements</p>
+          <div className="flex justify-start">
+            {Object.keys(AchievementBadgeInfo).map((key, index) => {
+              const badgeInfo = AchievementBadgeInfo[key as AchievementBadge];
+
+              const userEarned = user.achievements.find(
+                (a) => a.badgeType === key
+              );
+
+              return (
+                <Tooltip
+                  trigger={
+                    <Image
+                      key={index}
+                      src={`/achievement-badge-${
+                        userEarned ? 'earned' : 'unearned'
+                      }.svg`}
+                      alt={badgeInfo.description}
+                      width={32}
+                      height={32}
+                      className="cursor-pointer"
+                    />
+                  }
+                >
+                  <p className="text-sm whitespace-nowrap">
+                    {badgeInfo.description}
+                  </p>
+                </Tooltip>
+              );
+            })}
+          </div>
+        </div>
+        <button
+          onClick={async () => {
+            const supabase = clientSupabase();
+            await supabase.auth.signOut();
+            router.push('/login');
+          }}
+          className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-900 rounded-lg cursor-pointer"
+        >
+          Sign out
+        </button>
+      </div>
     </div>
   );
 }

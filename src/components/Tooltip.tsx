@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 
 interface TooltipProps {
   trigger: ReactNode;
@@ -26,11 +26,6 @@ export function Tooltip({ trigger, children }: TooltipProps) {
 
     setOffsetX(Math.round(targetLeft - wrapperRect.left));
   };
-
-  useEffect(() => {
-    window.addEventListener('resize', adjust);
-    return () => window.removeEventListener('resize', adjust);
-  }, []);
 
   return (
     <div
