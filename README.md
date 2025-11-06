@@ -55,24 +55,24 @@ npm run dev
 - Supabase for DB (postgres) and authentication
 - Drizzle ORM to manage tables, migrations and server-side queries, inserts, etc.
 
-### Core Architecture Components
+### Core Components
 
-| File                                        | Purpose                                                                                                                                                                                     |
-| :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`proxy.ts`**                              | **Protects all private routes.** If the user is logged out, they are redirected to `/login`, except for public paths (`/login`, `/signup`).                                                 |
-| **`/login/page.tsx`**                       | Page for logging in with an existing user. Provides a link to /signup if the user doesn't have an account.                                                                                  |
-| **`/signup/page.tsx`**                      | Page for creating a new account with email, password and username. Provides a link to /login if the user already has an account.                                                            |
-| **`/chat/page.tsx`**                        | Fetches the user's latest simulation and related data (`persona`, `messages`) using Drizzle's relational queries                                                                            |
-| **`/chat/actions.ts`**                      | Server actions to manage simulation flow, like `startNewSimulation`, `endSimulation` and `sendMessage`                                                                                      |
-| **`/components/ChatInterface.tsx`**         | Chat UI component. Subscribes to Supabase realtime channel on mount, and always scroll to the bottom on new message. Header contains the persona information and the end simulation button. |
-| **`/components/AvatarMenu.tsx`**            | Layout header icon with the user initial, that when clicked will show a menu with the username, achievements and the sign out option                                                        |
-| **`/components/StartSimulationButton.tsx`** | Component that shows on the main screen and the assessment popup to create a new simulation                                                                                                 |
-| **`/components/StartSimulationButton.tsx`** | Component that shows on the header of the ChatInterface to mark the simulation as finished (with status inactive) and shows the assessment popup.                                           |
-| **`/components/ToastProvider.tsx`**         | Basic toast component for error/info/success feedback that disappears after 4 seconds                                                                                                       |
-| **`/components/Tooltip.tsx`**               | Generic tooltip component used for expanded hover information on the persona name and achievement stars                                                                                     |
-| **`/db/supabase`**                          | Folder with supabase client initialization for server-side, client-side and middleware usage                                                                                                |
-| **`/db/drizzle`**                           | Folder with drizzle client initialization and DB schema                                                                                                                                     |
-| **`/db/seed`**                              | Folder with the seed for the personas and scenarios, as well as a dbinit SQL file meant to be run on the Supabase SQL editor                                                                |
+| File                                        | Purpose                                                                                                                                                                                               |
+| :------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`proxy.ts`**                              | **Protects all private routes.** If the user is logged out, they are redirected to `/login`, except for public paths (`/login`, `/signup`).                                                           |
+| **`/login/page.tsx`**                       | Page for logging in with an existing user with email and password through **Supabase auth**. Provides a link to `/signup` if the user doesn't have an account.                                        |
+| **`/signup/page.tsx`**                      | Page for creating a new account with email, password and username through **Supabase auth**. Provides a link to `/login` if the user already has an account.                                          |
+| **`/chat/page.tsx`**                        | Fetches the user's latest active simulation and related data (`persona`, `messages`) for the chat UI. If there is no active simulation, a **`Start New Simulation`** button appears.                  |
+| **`/chat/actions.ts`**                      | Server actions to manage simulation flow, like `startNewSimulation`, `endSimulation` and `sendMessage`                                                                                                |
+| **`/components/ChatInterface.tsx`**         | Chat UI component. Subscribes to **Supabase realtime** channel on mount, and always scroll to the bottom on new message. Header contains the persona information and the **`End Simulation`** button. |
+| **`/components/AvatarMenu.tsx`**            | Layout header icon with the user initial, that when clicked will show a menu with the username, achievements and the sign out option                                                                  |
+| **`/components/StartSimulationButton.tsx`** | Component that shows on the main screen and the assessment popup to create a new simulation                                                                                                           |
+| **`/components/EndSimulationButton.tsx`**   | Component that shows on the header of the chat to mark the simulation as finished (with status inactive) and shows the assessment popup.                                                              |
+| **`/components/ToastProvider.tsx`**         | Basic toast component for error/info/success feedback that disappears after 4 seconds                                                                                                                 |
+| **`/components/Tooltip.tsx`**               | Generic tooltip component used for expanded hover information on the persona name and achievement stars                                                                                               |
+| **`/db/supabase`**                          | Folder with supabase client initialization for server-side, client-side and middleware usage                                                                                                          |
+| **`/db/drizzle`**                           | Folder with drizzle client initialization and DB schema                                                                                                                                               |
+| **`/db/seed`**                              | Folder with the seed for the personas and scenarios, as well as a dbinit SQL file meant to be run on the Supabase SQL editor                                                                          |
 
 ### Simulation Flow
 
@@ -91,11 +91,11 @@ npm run dev
 
 ## Personas and scenarios
 
-| Persona     | Role                            | Tone                   |
-| :---------- | :------------------------------ | :--------------------- |
-| John Doe    | Customer Service Representative | Friendly and practical |
-| Jane Smith  | Technical Support Specialist    | Calm and analytical    |
-| Juan Garcia | Operations Coordinator          | Casual and upbeat      |
+| Persona       | Role                            | Tone                   | Description                                                                                  |
+| :------------ | :------------------------------ | :--------------------- | :------------------------------------------------------------------------------------------- |
+| John Doe      | Customer Service Representative | Friendly and practical | Support person for billing issues and information requests. Helps the user.                  |
+| Jane Smith    | Technical Support Specialist    | Calm and analytical    | Technical person for connection and performance issues. Helps the user.                      |
+| Lisa Peterson | Customer                        | Anxious and reactive   | Customer that asks for refunds, delays and other order/shipment issues. The user helps Lisa. |
 
 ## Implemented extension
 
