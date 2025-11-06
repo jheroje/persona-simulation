@@ -25,7 +25,16 @@ export default function AvatarMenu() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('*, achievements(*)')
+        .select(
+          `*, 
+          achievements(
+            id,
+            userId:user_id,
+            createdAt:created_at,
+            simulationId:simulation_id,
+            badgeType:badge_type
+          )`
+        )
         .eq('user_id', authUser.id)
         .single();
 
@@ -66,7 +75,7 @@ export default function AvatarMenu() {
             {AchievementBadgeList.map((key, index) => {
               const badgeInfo = AchievementBadgeInfo[key];
 
-              const userEarned = user.achievements.find(
+              const userEarned = user.achievements.some(
                 (a) => a.badgeType === key
               );
 

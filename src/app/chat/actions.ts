@@ -2,10 +2,14 @@
 
 import { db } from '@/db/drizzle';
 import {
+  Achievement,
+  AchievementBadge,
+  achievements,
   Assessment,
   assessments,
   Message,
   messages,
+  NewAchievement,
   personas,
   profiles,
   Scenario,
@@ -135,9 +139,67 @@ function getTimeToResolve(simulation: Simulation, messages: Message[]) {
   return seconds;
 }
 
-export async function endSimulation(simulationId: string): Promise<{
+function getNewAchievements(
+  userAchievements: Achievement[],
+  userSimulations: Simulation[],
+  userId: string,
+  simulationId: string,
+  score: number
+): NewAchievement[] {
+  const newAchievements: NewAchievement[] = [];
+
+  const hasAchievement = (badgeType: AchievementBadge) =>
+    userAchievements.some((a) => a.badgeType === badgeType);
+
+  const addAchievement = (badgeType: AchievementBadge) => {
+    if (!hasAchievement(badgeType)) {
+      newAchievements.push({ userId, simulationId, badgeType });
+    }
+  };
+
+  // Perfect Score Achievement
+  if (score === 100) addAchievement('SIMULATION_PERFECT_SCORE');
+
+  // First Simulation Achievement
+  if (userSimulations.length === 1) addAchievement('SIMULATION_FIRST');
+
+  // Count scenarios per persona
+  const personasAndScenariosCompleted = new Map<string, number>();
+
+  userSimulations.forEach((sim) => {
+    const scenarioCount = personasAndScenariosCompleted.get(sim.personaId) ?? 0;
+
+    personasAndScenariosCompleted.set(sim.personaId, scenarioCount + 1);
+  });
+
+  const totalPersonas = personasAndScenariosCompleted.size;
+  const totalScenariosPerPersona = 3;
+  const totalPersonasCompletedAllScenarios = personasAndScenariosCompleted
+    .values()
+    .toArray()
+    .filter((count) => count === totalScenariosPerPersona).length;
+
+  // All Personas Achievement
+  if (totalPersonas === 3) addAchievement('SIMULATION_ALL_PERSONAS');
+
+  // All Scenarios for One Persona Achievement
+  if (totalPersonasCompletedAllScenarios >= 1)
+    addAchievement('SIMULATION_ALL_SCENARIOS_FOR_PERSONA');
+
+  // All Scenarios for All Personas Achievement
+  if (totalPersonasCompletedAllScenarios === 3)
+    addAchievement('SIMULATION_ALL_SCENARIOS');
+
+  return newAchievements;
+}
+
+export async function endSimulation(
+  simulationId: string,
+  userId: string
+): Promise<{
   success: boolean;
   assessment?: Assessment;
+  achievements?: Achievement[];
   error?: string;
 }> {
   try {
@@ -201,6 +263,7 @@ export async function endSimulation(simulationId: string): Promise<{
       const [newAssessment] = await tx
         .insert(assessments)
         .values({
+          userId,
           simulationId,
           score,
           timeToResolve: sql`make_interval(secs => ${timeToResolve})`,
@@ -208,9 +271,32 @@ export async function endSimulation(simulationId: string): Promise<{
         })
         .returning();
 
+      // Check if user qualifies for achievements
+      const allUserAchievements = await tx.query.achievements.findMany({
+        where: eq(achievements.userId, userId),
+      });
+
+      const allUserSimulations = await tx.query.simulations.findMany({
+        where: eq(simulations.userId, userId),
+      });
+
+      const newAchievementsData = getNewAchievements(
+        allUserAchievements,
+        allUserSimulations,
+        userId,
+        simulationId,
+        score
+      );
+
+      const newAchievements = await tx
+        .insert(achievements)
+        .values(newAchievementsData)
+        .returning();
+
       return {
         success: true,
         assessment: newAssessment,
+        achievements: newAchievements,
       };
     });
 

@@ -2,7 +2,6 @@
 
 import { endSimulation } from '@/app/chat/actions';
 import { Assessment } from '@/db/drizzle/schema';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import StartSimulationButton from './StartSimulationButton';
 import { useToast } from './ToastProvider';
@@ -16,7 +15,6 @@ export default function EndSimulationButton({
   simulationId,
   userId,
 }: ButtonProps) {
-  const router = useRouter();
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [assessment, setAssessment] = useState<Assessment | null>(null);
@@ -25,7 +23,7 @@ export default function EndSimulationButton({
     setIsLoading(true);
 
     try {
-      const result = await endSimulation(simulationId);
+      const result = await endSimulation(simulationId, userId);
 
       if (result.success) {
         if (result.assessment) {
@@ -45,11 +43,6 @@ export default function EndSimulationButton({
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const restart = () => {
-    setAssessment(null);
-    // router.refresh();
   };
 
   return (
@@ -87,7 +80,10 @@ export default function EndSimulationButton({
             </p>
 
             <div className="flex justify-center">
-              <StartSimulationButton userId={userId} onStart={restart} />
+              <StartSimulationButton
+                userId={userId}
+                onStart={() => setAssessment(null)}
+              />
             </div>
           </div>
         </div>

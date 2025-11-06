@@ -167,6 +167,9 @@ export const assessments = pgTable(
   'assessments',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .references(() => profiles.userId, { onDelete: 'cascade' })
+      .notNull(),
     simulationId: uuid('simulation_id')
       .references(() => simulations.id, { onDelete: 'cascade' })
       .unique()
@@ -285,7 +288,7 @@ export const AchievementBadgeList = [
   'SIMULATION_PERFECT_SCORE',
 ] as const;
 
-type AchievementBadge = (typeof AchievementBadgeList)[number];
+export type AchievementBadge = (typeof AchievementBadgeList)[number];
 
 export type AchievementInfo = {
   description: string;
@@ -320,6 +323,7 @@ export type Achievement = InferSelectModel<typeof achievements>;
 export type NewPersona = InferInsertModel<typeof personas>;
 export type NewSimulation = InferInsertModel<typeof simulations>;
 export type NewMessage = InferInsertModel<typeof messages>;
+export type NewAchievement = InferInsertModel<typeof achievements>;
 
 // RELATION TYPES
 export type ProfileWithAchievements = Profile & {
