@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import type { NextRequest, NextResponse } from 'next/server';
 
-export function proxySupabase(req: NextRequest, res: NextResponse) {
+export function middlewareSupabase(req: NextRequest, res: NextResponse) {
   return createServerClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,

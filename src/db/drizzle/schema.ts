@@ -213,7 +213,7 @@ export const achievements = pgTable(
         onDelete: 'cascade',
       })
       .notNull(),
-    badgeType: text('badge_type').notNull(),
+    badgeType: text('badge_type').$type<AchievementBadge>().notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -274,9 +274,40 @@ export type Scenario = {
   };
 };
 
+// MODEL TYPES
 export type MessageSender = 'user' | 'persona';
 export type SimulationStatus = 'active' | 'inactive';
 
+export type AchievementBadge =
+  | 'SIMULATION_FIRST'
+  | 'SIMULATION_ALL_PERSONAS'
+  | 'SIMULATION_ALL_SCENARIOS_FOR_PERSONA'
+  | 'SIMULATION_ALL_SCENARIOS'
+  | 'SIMULATION_PERFECT_SCORE';
+
+export type AchievementInfo = {
+  description: string;
+};
+
+export const AchievementBadgeInfo: Record<AchievementBadge, AchievementInfo> = {
+  SIMULATION_FIRST: {
+    description: 'Completed your first simulation',
+  },
+  SIMULATION_ALL_PERSONAS: {
+    description: 'Completed at least one simulation with each persona',
+  },
+  SIMULATION_ALL_SCENARIOS_FOR_PERSONA: {
+    description: 'Completed all scenarios for one persona',
+  },
+  SIMULATION_ALL_SCENARIOS: {
+    description: 'Completed all scenarios across all personas',
+  },
+  SIMULATION_PERFECT_SCORE: {
+    description: 'Achieved a perfect assessment score',
+  },
+};
+
+// MODEL INFERRED TYPES
 export type Profile = InferSelectModel<typeof profiles>;
 export type Persona = InferSelectModel<typeof personas>;
 export type Simulation = InferSelectModel<typeof simulations>;
@@ -289,20 +320,11 @@ export type NewSimulation = InferInsertModel<typeof simulations>;
 export type NewMessage = InferInsertModel<typeof messages>;
 
 // RELATION TYPES
-export type ProfileWithSimulationsAndAchievements = Profile & {
-  simulations: Simulation[];
+export type ProfileWithAchievements = Profile & {
   achievements: Achievement[];
-};
-
-export type PersonaWithSimulations = Persona & {
-  simulations: Simulation[];
 };
 
 export type SimulationWithPersonaAndMessages = Simulation & {
   persona: Persona;
   messages: Message[];
-};
-
-export type MessageWithSimulation = Message & {
-  simulation: Simulation;
 };

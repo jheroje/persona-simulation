@@ -5,8 +5,8 @@ import { Message, SimulationWithPersonaAndMessages } from '@/db/drizzle/schema';
 import { clientSupabase } from '@/db/supabase/client';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import EndSimulationButton from './EndSimulationButton';
-import { Tooltip } from './Tooltip';
 import { useToast } from './ToastProvider';
+import { Tooltip } from './Tooltip';
 
 interface ChatInterfaceProps {
   simulation: SimulationWithPersonaAndMessages;
@@ -33,7 +33,7 @@ function PersonaDetails({
   persona: SimulationWithPersonaAndMessages['persona'];
 }) {
   return (
-    <div className="space-y-2 w-80">
+    <div className="space-y-2 p-2 w-80">
       <div className="font-bold text-gray-300">
         <p>Role: {persona.role}</p>
         <p>Tone: {persona.tone}</p>
@@ -196,6 +196,9 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
               />
               <ScenarioTag
                 text={`Subject: ${simulation.scenarioContext.subject}`}
+              />
+              <ScenarioTag
+                text={`Notes: ${simulation.scenarioContext.notes}`}
               />
             </div>
           </div>

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { proxySupabase } from './db/supabase/proxy';
+import { middlewareSupabase } from './db/supabase/middleware';
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const res = NextResponse.next();
-  const supabase = proxySupabase(req, res);
+  const supabase = middlewareSupabase(req, res);
 
   const {
     data: { user },
