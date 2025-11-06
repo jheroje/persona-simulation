@@ -203,7 +203,10 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
         </div>
 
         <div className="flex items-center gap-4">
-          <EndSimulationButton simulationId={simulation.id} />
+          <EndSimulationButton
+            simulationId={simulation.id}
+            userId={simulation.userId}
+          />
         </div>
       </div>
 

@@ -7,15 +7,22 @@ import { useToast } from './ToastProvider';
 
 interface ButtonProps {
   userId: string;
+  onStart?: () => void;
 }
 
-export default function StartSimulationButton({ userId }: ButtonProps) {
+export default function StartSimulationButton({
+  userId,
+  onStart,
+}: ButtonProps) {
   const router = useRouter();
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleStartSimulation = async () => {
     setIsLoading(true);
+
+    if (!!onStart) onStart();
+
     try {
       const result = await startNewSimulation(userId);
 
