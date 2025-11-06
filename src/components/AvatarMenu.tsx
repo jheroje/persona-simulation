@@ -12,21 +12,29 @@ import { useEffect, useState } from 'react';
 import { Tooltip } from './Tooltip';
 
 export default function AvatarMenu() {
+  const router = useRouter();
+  const supabase = clientSupabase();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<ProfileWithAchievements | null>(null);
-  const router = useRouter();
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const supabase = clientSupabase();
-      const authUser = await getUser();
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setIsOpen(false);
+  };
 
-      if (!authUser) return;
+  const fetchUserProfile = async () => {
+    const authUser = await getUser();
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select(
-          `*, 
+    if (!authUser) {
+      setUser(null);
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select(
+        `*, 
           achievements(
             id,
             userId:user_id,
@@ -34,16 +42,32 @@ export default function AvatarMenu() {
             simulationId:simulation_id,
             badgeType:badge_type
           )`
-        )
-        .eq('user_id', authUser.id)
-        .single();
+      )
+      .eq('user_id', authUser.id)
+      .single();
 
-      if (profile) {
-        setUser(profile);
-      }
-    };
+    setUser(profile ?? null);
+  };
 
+  useEffect(() => {
     fetchUserProfile();
+
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      async (event) => {
+        if (event === 'SIGNED_OUT') {
+          router.replace('/login');
+          router.refresh();
+        } else if (event === 'SIGNED_IN') {
+          router.refresh();
+        }
+
+        fetchUserProfile();
+      }
+    );
+
+    return () => {
+      subscription.subscription.unsubscribe();
+    };
   }, []);
 
   if (!user) return null;
@@ -69,7 +93,7 @@ export default function AvatarMenu() {
         <div className="px-4 py-2 border-b border-neutral-500">
           <p className="text-md font-bold">{user.username}</p>
         </div>
-        <div className="px-4 py-2 border-b border-neutral-500">
+        <div className="px-4 py-4 border-b border-neutral-500">
           <p className="text-sm font-medium">Achievements</p>
           <div className="flex justify-start">
             {AchievementBadgeList.map((key, index) => {
@@ -103,11 +127,7 @@ export default function AvatarMenu() {
           </div>
         </div>
         <button
-          onClick={async () => {
-            const supabase = clientSupabase();
-            await supabase.auth.signOut();
-            router.push('/login');
-          }}
+          onClick={signOut}
           className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-900 rounded-lg cursor-pointer"
         >
           Sign out

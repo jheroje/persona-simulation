@@ -27,16 +27,18 @@ export default function RootLayout({
 }>) {
   return (
     <ToastProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <header className="fixed top-5 right-5 z-50">
-            <AvatarMenu />
-          </header>
-          <LoadingProvider>{children}</LoadingProvider>
-        </body>
-      </html>
+      <LoadingProvider>
+        <html lang="en">
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <header className="fixed top-5 right-5 z-50">
+              <AvatarMenu />
+            </header>
+            {children}
+          </body>
+        </html>
+      </LoadingProvider>
     </ToastProvider>
   );
 }

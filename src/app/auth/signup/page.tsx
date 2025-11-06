@@ -44,7 +44,7 @@ export default function Signup() {
     }
 
     showToast('Sign-up successful! You are now logged in.', 'success');
-    router.push('/chat');
+    router.push('/');
   };
 
   return (
