@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Persona Simulation
 
-## Getting Started
+## App URL
 
-First, run the development server:
+https://persona-simulation.vercel.app
+
+## How to run locally
+
+### Prerequisites
+
+- Node.js (version 24)
+- Supabase account and project created
+
+### Setup environment variables
+
+Copy the file named **`.example.env`** as **`.env.local`** in your project root and fill it with your credentials:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Server side
+DATABASE_URL="supabase postgresql connection string"
+SUPABASE_URL="supabase project url"
+SUPABASE_SERVICE_ROLE_KEY="supabase service role key"
+
+# Client side
+NEXT_PUBLIC_SUPABASE_URL="supabase project url"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="supabase anon key"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Bootstrap the project
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Install the dependencies
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Apply the migrations to your Supabase database
+npm run db:migrate
 
-## Learn More
+# Seed the DB with the predefined personas
+npm run db:seed
 
-To learn more about Next.js, take a look at the following resources:
+# Run the contents of this file in Supabase SQL editor
+./src/db/seed/dbinit.sql
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start the development server
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture overview
 
-## Deploy on Vercel
+### Tech stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Typescript
+- Tailwind for styling
+- NextJS for UI and server logic
+- Supabase for DB (postgres) and authentication
+- Drizzle ORM to manage tables, migrations and server-side queries, inserts, etc.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Core Architecture Components
+
+| Component               | Type   | Purpose                                                                                                                                     |
+| :---------------------- | :----- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`proxy.ts`**          | Server | **Protects all private routes.** If the user is logged out, they are redirected to `/login`, except for public paths (`/login`, `/signup`). |
+| **`/chat/page.tsx`**    | Server | Fetches the user's latest simulation and related data (`persona`, `messages`) using Drizzle's relational queries (`.with()`).               |
+| **`ChatInterface.tsx`** | Client | Manages the chat UI state, handles user input, and will eventually trigger Server Actions to process messages.                              |
+
+### Simulation Flow
+
+1.  **Start:** User clicks **`Start New Simulation`** button on `/chat`.
+2.  **Create simulation (`startNewSimulation` action):**
+    1. Randomly selects one `persona` and one nested `scenario`.
+    2. Creates a new `simulations` record, with active status, saving a **snapshot** of the full `scenarioContext` for assessment and audit integrity.
+    3. Creates the first `message` (the persona's initial prompt).
+3.  **Chat:**
+    1. Chat UI appears with the first message from the persona
+    2. User can now send a message (`sendMessage` action)
+    3. This action will also return the next persona message based on the response rules and render it as if it was naturally written.
+    4. This loop can last as long as the user wants
+4.  **End:** User clicks **`End Simulation`** button on `/chat`. Simulation status becomes inactive and the user can start a new simulation again
+
+## Personas and scenarios
+
+| Persona     | Role                            | Tone                   |
+| :---------- | :------------------------------ | :--------------------- |
+| John Doe    | Customer Service Representative | Friendly and practical |
+| Jane Smith  | Technical Support Specialist    | Calm and analytical    |
+| Juan Garcia | Operations Coordinator          | Casual and upbeat      |
+
+## Implemented extension
+
+### Extension chosen
+
+Simulation assessment: After each run, show concise feedback based on simple criteria you define (e.g., greeting/verification, clarity, empathy, probing, resolution, time to resolve). A rule‑based checklist/score is sufficient. Bonus: add light gamification—e.g., achievements/badges, streaks, or progress tiers.
+
+### Why
+
+I think feedback and gamification are a very interesting addition to this project.
+
+## Known limitations, what I have done with more time
+
+- I would have polished the design a little bit more, as it is very simple as it is right now.
+- I also would have loved to implement more extensions as most of them seem really interesting!

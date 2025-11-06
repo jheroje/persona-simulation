@@ -32,15 +32,15 @@ export const profiles = pgTable(
       .notNull(),
   },
   (table) => [
-    pgPolicy('profiles_insert_own', {
-      for: 'insert',
-      to: 'authenticated',
-      withCheck: sql`${table.userId} = auth.uid()`,
-    }),
     pgPolicy('profiles_select_own', {
       for: 'select',
       to: 'authenticated',
       using: sql`${table.userId} = auth.uid()`,
+    }),
+    pgPolicy('profiles_insert_own', {
+      for: 'insert',
+      to: 'authenticated',
+      withCheck: sql`${table.userId} = auth.uid()`,
     }),
     pgPolicy('profiles_update_own', {
       for: 'update',
@@ -92,32 +92,76 @@ export const personas = pgTable(
   ]
 );
 
-export const simulations = pgTable('simulations', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .references(() => profiles.userId, { onDelete: 'cascade' })
-    .notNull(),
-  personaId: uuid('persona_id')
-    .references(() => personas.id, { onDelete: 'cascade' })
-    .notNull(),
-  scenarioContext: jsonb('scenario_context').$type<Scenario>().notNull(),
-  status: text('status').$type<SimulationStatus>().notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const simulations = pgTable(
+  'simulations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .references(() => profiles.userId, { onDelete: 'cascade' })
+      .notNull(),
+    personaId: uuid('persona_id')
+      .references(() => personas.id, { onDelete: 'cascade' })
+      .notNull(),
+    scenarioContext: jsonb('scenario_context').$type<Scenario>().notNull(),
+    status: text('status').$type<SimulationStatus>().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    pgPolicy('simulations_select_own', {
+      for: 'select',
+      to: 'authenticated',
+      using: sql`${table.userId} = auth.uid()`,
+    }),
+    pgPolicy('simulations_insert_own', {
+      for: 'insert',
+      to: 'authenticated',
+      withCheck: sql`${table.userId} = auth.uid()`,
+    }),
+    pgPolicy('simulations_update_own', {
+      for: 'update',
+      to: 'authenticated',
+      using: sql`${table.userId} = auth.uid()`,
+      withCheck: sql`${table.userId} = auth.uid()`,
+    }),
+  ]
+).enableRLS();
 
-export const messages = pgTable('messages', {
-  id: bigserial('id', { mode: 'number' }).primaryKey(),
-  simulationId: uuid('simulation_id')
-    .references(() => simulations.id, { onDelete: 'cascade' })
-    .notNull(),
-  sender: text('sender').$type<MessageSender>().notNull(),
-  content: text('content').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const messages = pgTable(
+  'messages',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    simulationId: uuid('simulation_id')
+      .references(() => simulations.id, { onDelete: 'cascade' })
+      .notNull(),
+    sender: text('sender').$type<MessageSender>().notNull(),
+    content: text('content').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    pgPolicy('messages_select_by_simulation', {
+      for: 'select',
+      to: 'authenticated',
+      using: sql`EXISTS (
+        SELECT 1 FROM ${simulations}
+        WHERE ${simulations.id} = ${table.simulationId}
+          AND ${simulations.userId} = auth.uid()
+      )`,
+    }),
+    pgPolicy('messages_insert_by_simulation', {
+      for: 'insert',
+      to: 'authenticated',
+      withCheck: sql`EXISTS (
+        SELECT 1 FROM ${simulations}
+        WHERE ${simulations.id} = ${table.simulationId}
+          AND ${simulations.userId} = auth.uid()
+      )`,
+    }),
+  ]
+).enableRLS();
 
 export const assessments = pgTable(
   'assessments',
@@ -136,8 +180,26 @@ export const assessments = pgTable(
   },
   (table) => [
     check('score_range', sql`${table.score} >= 0 AND ${table.score} <= 100`),
+    pgPolicy('assessments_select_by_simulation', {
+      for: 'select',
+      to: 'authenticated',
+      using: sql`EXISTS (
+        SELECT 1 FROM ${simulations}
+        WHERE ${simulations.id} = ${table.simulationId}
+          AND ${simulations.userId} = auth.uid()
+      )`,
+    }),
+    pgPolicy('assessments_insert_by_simulation', {
+      for: 'insert',
+      to: 'authenticated',
+      withCheck: sql`EXISTS (
+        SELECT 1 FROM ${simulations}
+        WHERE ${simulations.id} = ${table.simulationId}
+          AND ${simulations.userId} = auth.uid()
+      )`,
+    }),
   ]
-);
+).enableRLS();
 
 export const achievements = pgTable(
   'achievements',
@@ -156,8 +218,20 @@ export const achievements = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => [unique().on(table.userId, table.badgeType)]
-);
+  (table) => [
+    unique().on(table.userId, table.badgeType),
+    pgPolicy('achievements_select_own', {
+      for: 'select',
+      to: 'authenticated',
+      using: sql`${table.userId} = auth.uid()`,
+    }),
+    pgPolicy('achievements_insert_own', {
+      for: 'insert',
+      to: 'authenticated',
+      withCheck: sql`${table.userId} = auth.uid()`,
+    }),
+  ]
+).enableRLS();
 
 // RELATIONS
 export const profilesRelations = relations(profiles, ({ many }) => ({

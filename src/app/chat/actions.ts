@@ -81,36 +81,38 @@ export async function endSimulation(simulationId: string) {
 }
 
 export async function sendMessage(simulationId: string, content: string) {
-  return await db.transaction(async (tx) => {
-    const simulation = await tx.query.simulations.findFirst({
-      where: eq(simulations.id, simulationId),
-      with: { persona: true },
-    });
+  try {
+    await db.transaction(async (tx) => {
+      const simulation = await tx.query.simulations.findFirst({
+        where: eq(simulations.id, simulationId),
+        with: { persona: true },
+      });
 
-    if (!simulation) throw new Error('Simulation not found');
+      if (!simulation) throw new Error('Simulation not found');
 
-    const [userRow] = await tx
-      .insert(messages)
-      .values({ simulationId, sender: 'user', content })
-      .returning();
+      const { responses } = simulation.scenarioContext;
 
-    const { responses } = simulation.scenarioContext;
+      const matchingRule = responses.rules.find((r) =>
+        r.triggers.some((t) => content.toLowerCase().includes(t))
+      );
 
-    const matchingRule = responses.rules.find((r) =>
-      r.triggers.some((t) => content.toLowerCase().includes(t))
-    );
+      const reply = matchingRule?.response || responses.default;
 
-    const reply = matchingRule?.response || responses.default;
+      await tx.insert(messages).values({
+        simulationId,
+        sender: 'user',
+        content,
+      });
 
-    const [personaRow] = await tx
-      .insert(messages)
-      .values({
+      await tx.insert(messages).values({
         simulationId,
         sender: 'persona',
         content: reply.replaceAll('{username}', ''),
-      })
-      .returning();
-
-    return { userMessage: userRow, personaMessage: personaRow };
-  });
+      });
+    });
+    return { success: true };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Unknown error';
+    return { success: false, error: message };
+  }
 }

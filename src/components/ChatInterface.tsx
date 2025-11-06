@@ -2,9 +2,11 @@
 
 import { sendMessage } from '@/app/chat/actions';
 import { Message, SimulationWithPersonaAndMessages } from '@/db/drizzle/schema';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { clientSupabase } from '@/db/supabase/client';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import EndSimulationButton from './EndSimulationButton';
 import { Tooltip } from './Tooltip';
+import { useToast } from './ToastProvider';
 
 interface ChatInterfaceProps {
   simulation: SimulationWithPersonaAndMessages;
@@ -62,12 +64,76 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>(simulation.messages);
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const supabase = clientSupabase();
+  const showToast = useToast();
 
   useLayoutEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel(`simulation:${simulation.id}:messages`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `simulation_id=eq.${simulation.id}`,
+        },
+        async (payload) => {
+          const newMsg = payload.new as Message;
+
+          if (newMsg.sender === 'persona') {
+            handlePersonaMessage(newMsg);
+          } else {
+            handleUserMessage(newMsg);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [simulation.id]);
+
+  const handleUserMessage = (message: Message) => {
+    if (message.sender !== 'user') return;
+
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === message.id)) return prev;
+
+      // Replace optimistic message
+      const updated = prev.map((m) => (m.id < 0 ? message : m));
+
+      const alreadyReplaced = updated.some((m) => m.id === message.id);
+      return alreadyReplaced ? updated : [...prev, message];
+    });
+  };
+
+  const handlePersonaMessage = async (message: Message) => {
+    if (message.sender !== 'persona') return;
+
+    const full = message.content;
+    const shell = { ...message, content: '' };
+
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === shell.id)) return prev;
+      return [...prev, shell];
+    });
+
+    const stepMs = 15;
+    for (let i = 1; i <= full.length; i++) {
+      await new Promise((r) => setTimeout(r, stepMs));
+      const partial = full.slice(0, i);
+      setMessages((prev) =>
+        prev.map((m) => (m.id === shell.id ? { ...m, content: partial } : m))
+      );
+    }
+  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,36 +141,33 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
     if (!input.trim() || isProcessing) return;
 
     const text = input.trim();
+
     setInput('');
     setIsProcessing(true);
-    setError(null);
+
+    // Optimistic message for instant loading
+    const optimisticMessage: Message = {
+      id: -1,
+      simulationId: simulation.id,
+      sender: 'user',
+      content: text,
+      createdAt: new Date(),
+    };
+
+    handleUserMessage(optimisticMessage);
 
     try {
-      const { userMessage, personaMessage } = await sendMessage(
-        simulation.id,
-        text
-      );
+      const result = await sendMessage(simulation.id, text);
 
-      setMessages((prev) => [...prev, userMessage]);
-
-      const full = personaMessage.content;
-      const personaShell = { ...personaMessage, content: '' };
-
-      setMessages((prev) => [...prev, personaShell]);
-
-      const stepMs = 15;
-      for (let i = 1; i <= full.length; i++) {
-        await new Promise((r) => setTimeout(r, stepMs));
-        const partial = full.slice(0, i);
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === personaShell.id ? { ...m, content: partial } : m
-          )
-        );
+      if (result.error) {
+        showToast(`Failed to send message: ${result.error}`, 'error');
       }
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Something went wrong';
-      setError(msg);
+    } catch (error) {
+      console.error(error);
+      showToast(
+        `An unexpected error occurred while sending the message.`,
+        'error'
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -142,12 +205,6 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
           <EndSimulationButton simulationId={simulation.id} />
         </div>
       </div>
-
-      {error && (
-        <div className="px-4 py-2 text-sm text-red-200 bg-red-900/50 border-b border-red-700">
-          {error}
-        </div>
-      )}
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
