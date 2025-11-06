@@ -1,10 +1,16 @@
 'use client';
 
 import { endSimulation } from '@/app/chat/actions';
-import { Assessment } from '@/db/drizzle/schema';
+import {
+  Achievement,
+  AchievementBadgeInfo,
+  Assessment,
+} from '@/db/drizzle/schema';
+import Image from 'next/image';
 import { useState } from 'react';
 import StartSimulationButton from './StartSimulationButton';
 import { useToast } from './ToastProvider';
+import { Tooltip } from './Tooltip';
 
 interface ButtonProps {
   simulationId: string;
@@ -18,6 +24,7 @@ export default function EndSimulationButton({
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [assessment, setAssessment] = useState<Assessment | null>(null);
+  const [achievements, setAchievements] = useState<Achievement[] | null>(null);
 
   const handleEndSimulation = async () => {
     setIsLoading(true);
@@ -28,6 +35,9 @@ export default function EndSimulationButton({
       if (result.success) {
         if (result.assessment) {
           setAssessment(result.assessment);
+          if (result.achievements?.length) {
+            setAchievements(result.achievements);
+          }
         } else {
           showToast('Simulation ended.', 'info');
         }
@@ -43,6 +53,11 @@ export default function EndSimulationButton({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const reset = () => {
+    setAssessment(null);
+    setAchievements(null);
   };
 
   return (
@@ -79,11 +94,43 @@ export default function EndSimulationButton({
               </span>
             </p>
 
-            <div className="flex justify-center">
-              <StartSimulationButton
-                userId={userId}
-                onStart={() => setAssessment(null)}
-              />
+            {achievements?.length && (
+              <>
+                <h2 className="text-2xl font-bold mb-4">
+                  {`You have won ${achievements.length} ${
+                    achievements.length > 1 ? `achievements` : `achievement`
+                  }!`}
+                </h2>
+                <div className="flex justify-center">
+                  {achievements.map((achievement, index) => {
+                    const badgeInfo =
+                      AchievementBadgeInfo[achievement.badgeType];
+
+                    return (
+                      <Tooltip
+                        key={index}
+                        trigger={
+                          <Image
+                            src={`/achievement-badge-earned.svg`}
+                            alt={badgeInfo.description}
+                            width={64}
+                            height={64}
+                            className="cursor-pointer"
+                          />
+                        }
+                      >
+                        <p className="text-sm whitespace-nowrap">
+                          {badgeInfo.description}
+                        </p>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            <div className="flex justify-center mt-4">
+              <StartSimulationButton userId={userId} onStart={reset} />
             </div>
           </div>
         </div>

@@ -288,10 +288,9 @@ export async function endSimulation(
         score
       );
 
-      const newAchievements = await tx
-        .insert(achievements)
-        .values(newAchievementsData)
-        .returning();
+      const newAchievements = newAchievementsData.length
+        ? await tx.insert(achievements).values(newAchievementsData).returning()
+        : undefined;
 
       return {
         success: true,
