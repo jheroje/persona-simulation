@@ -57,11 +57,22 @@ npm run dev
 
 ### Core Architecture Components
 
-| Component               | Type   | Purpose                                                                                                                                     |
-| :---------------------- | :----- | :------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`proxy.ts`**          | Server | **Protects all private routes.** If the user is logged out, they are redirected to `/login`, except for public paths (`/login`, `/signup`). |
-| **`/chat/page.tsx`**    | Server | Fetches the user's latest simulation and related data (`persona`, `messages`) using Drizzle's relational queries (`.with()`).               |
-| **`ChatInterface.tsx`** | Client | Manages the chat UI state, handles user input, and will eventually trigger Server Actions to process messages.                              |
+| File                                        | Purpose                                                                                                                                                                                     |
+| :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`proxy.ts`**                              | **Protects all private routes.** If the user is logged out, they are redirected to `/login`, except for public paths (`/login`, `/signup`).                                                 |
+| **`/login/page.tsx`**                       | Page for logging in with an existing user. Provides a link to /signup if the user doesn't have an account.                                                                                  |
+| **`/signup/page.tsx`**                      | Page for creating a new account with email, password and username. Provides a link to /login if the user already has an account.                                                            |
+| **`/chat/page.tsx`**                        | Fetches the user's latest simulation and related data (`persona`, `messages`) using Drizzle's relational queries                                                                            |
+| **`/chat/actions.ts`**                      | Server actions to manage simulation flow, like `startNewSimulation`, `endSimulation` and `sendMessage`                                                                                      |
+| **`/components/ChatInterface.tsx`**         | Chat UI component. Subscribes to Supabase realtime channel on mount, and always scroll to the bottom on new message. Header contains the persona information and the end simulation button. |
+| **`/components/AvatarMenu.tsx`**            | Layout header icon with the user initial, that when clicked will show a menu with the username, achievements and the sign out option                                                        |
+| **`/components/StartSimulationButton.tsx`** | Component that shows on the main screen and the assessment popup to create a new simulation                                                                                                 |
+| **`/components/StartSimulationButton.tsx`** | Component that shows on the header of the ChatInterface to mark the simulation as finished (with status inactive) and shows the assessment popup.                                           |
+| **`/components/ToastProvider.tsx`**         | Basic toast component for error/info/success feedback that disappears after 4 seconds                                                                                                       |
+| **`/components/Tooltip.tsx`**               | Generic tooltip component used for expanded hover information on the persona name and achievement stars                                                                                     |
+| **`/db/supabase`**                          | Folder with supabase client initialization for server-side, client-side and middleware usage                                                                                                |
+| **`/db/drizzle`**                           | Folder with drizzle client initialization and DB schema                                                                                                                                     |
+| **`/db/seed`**                              | Folder with the seed for the personas and scenarios, as well as a dbinit SQL file meant to be run on the Supabase SQL editor                                                                |
 
 ### Simulation Flow
 
@@ -73,9 +84,10 @@ npm run dev
 3.  **Chat:**
     1. Chat UI appears with the first message from the persona
     2. User can now send a message (`sendMessage` action)
-    3. This action will also return the next persona message based on the response rules and render it as if it was naturally written.
+    3. This action will also return the next persona message based on the response rules (triggers) and render it as if it was naturally written.
     4. This loop can last as long as the user wants
-4.  **End:** User clicks **`End Simulation`** button on `/chat`. Simulation status becomes inactive and the user can start a new simulation again
+4.  **Chat finish:** User clicks **`End Simulation`** button on `/chat`. Simulation status becomes inactive and the asessment popup appears.
+5.  **Assessment:** User will see the assessment results, with the score, the time to resolve and the feedback. If the user won any achievements, they will also show. This popup contains a **`Start New Simulation`** button the user can click to begin again
 
 ## Personas and scenarios
 
@@ -93,9 +105,14 @@ Simulation assessment: After each run, show concise feedback based on simple cri
 
 ### Why
 
-I think feedback and gamification are a very interesting addition to this project.
+I think feedback and gamification are a very interesting addition to this project. Feedback lets the user know what went well and what could be improved, and achievements keep the user engaged.
 
 ## Known limitations, what I have done with more time
 
 - I would have polished the design a little bit more, as it is very simple as it is right now.
-- I also would have loved to implement more extensions as most of them seem really interesting!
+- Lots of room to shave bits of performance and improve UX.
+- Add some simulation flow testing.
+- Improve feedback criteria, add more achievements, add a different icon for each achievement, etc.
+- Add different environments (test/dev, staging, etc)
+- CI/CD (light lint and test jobs before deployment)
+- I also would have loved to implement more extensions as most of them seem really interesting and useful!
