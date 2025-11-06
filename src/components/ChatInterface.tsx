@@ -83,13 +83,11 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
           table: 'messages',
           filter: `simulation_id=eq.${simulation.id}`,
         },
-        async (payload) => {
-          const newMsg = payload.new as Message;
-
-          if (newMsg.sender === 'persona') {
-            handlePersonaMessage(newMsg);
+        async (payload: { new: Message }) => {
+          if (payload.new.sender === 'persona') {
+            handlePersonaMessage(payload.new);
           } else {
-            handleUserMessage(newMsg);
+            handleUserMessage(payload.new);
           }
         }
       )

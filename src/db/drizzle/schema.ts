@@ -278,12 +278,15 @@ export type Scenario = {
 export type MessageSender = 'user' | 'persona';
 export type SimulationStatus = 'active' | 'inactive';
 
-export type AchievementBadge =
-  | 'SIMULATION_FIRST'
-  | 'SIMULATION_ALL_PERSONAS'
-  | 'SIMULATION_ALL_SCENARIOS_FOR_PERSONA'
-  | 'SIMULATION_ALL_SCENARIOS'
-  | 'SIMULATION_PERFECT_SCORE';
+export const AchievementBadgeList = [
+  'SIMULATION_FIRST',
+  'SIMULATION_ALL_PERSONAS',
+  'SIMULATION_ALL_SCENARIOS_FOR_PERSONA',
+  'SIMULATION_ALL_SCENARIOS',
+  'SIMULATION_PERFECT_SCORE',
+] as const;
+
+type AchievementBadge = (typeof AchievementBadgeList)[number];
 
 export type AchievementInfo = {
   description: string;
@@ -305,7 +308,7 @@ export const AchievementBadgeInfo: Record<AchievementBadge, AchievementInfo> = {
   SIMULATION_PERFECT_SCORE: {
     description: 'Achieved a perfect assessment score',
   },
-};
+} as const;
 
 // MODEL INFERRED TYPES
 export type Profile = InferSelectModel<typeof profiles>;

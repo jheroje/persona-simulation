@@ -1,7 +1,7 @@
 import ChatInterface from '@/components/ChatInterface';
 import StartSimulationButton from '@/components/StartSimulationButton';
 import { db } from '@/db/drizzle';
-import { messages as messagesTable, simulations } from '@/db/drizzle/schema';
+import { messages, simulations } from '@/db/drizzle/schema';
 import { getUser } from '@/db/supabase/server';
 import { and, asc, desc, eq } from 'drizzle-orm';
 
@@ -20,7 +20,7 @@ export default async function SimulationsPage() {
     orderBy: [desc(simulations.createdAt)],
     with: {
       persona: true,
-      messages: { orderBy: [asc(messagesTable.createdAt)] },
+      messages: { orderBy: [asc(messages.createdAt)] },
     },
   });
 

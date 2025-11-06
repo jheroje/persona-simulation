@@ -1,8 +1,8 @@
 'use client';
 
 import {
-  AchievementBadge,
   AchievementBadgeInfo,
+  AchievementBadgeList,
   ProfileWithAchievements,
 } from '@/db/drizzle/schema';
 import { clientSupabase, getUser } from '@/db/supabase/client';
@@ -63,8 +63,8 @@ export default function AvatarMenu() {
         <div className="px-4 py-2 border-b">
           <p className="text-sm font-medium">Achievements</p>
           <div className="flex justify-start">
-            {Object.keys(AchievementBadgeInfo).map((key, index) => {
-              const badgeInfo = AchievementBadgeInfo[key as AchievementBadge];
+            {AchievementBadgeList.map((key, index) => {
+              const badgeInfo = AchievementBadgeInfo[key];
 
               const userEarned = user.achievements.find(
                 (a) => a.badgeType === key
