@@ -13,6 +13,8 @@ export function Tooltip({ trigger, children }: TooltipProps) {
   const [offsetX, setOffsetX] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
+  const isMobile = () => window.matchMedia('(hover: none)').matches;
+
   const adjust = () => {
     const w = wrapperRef.current;
     const t = tooltipRef.current;
@@ -31,17 +33,35 @@ export function Tooltip({ trigger, children }: TooltipProps) {
   };
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !isMobile()) return;
 
-    document.addEventListener('click', handleClick);
+    const clickClose = () => {
+      setIsOpen(false);
+    };
 
-    return () => document.removeEventListener('click', handleClick);
+    document.addEventListener('click', clickClose);
+
+    return () => document.removeEventListener('click', clickClose);
   }, [isOpen]);
 
-  const handleClick = (e: React.MouseEvent | MouseEvent) => {
-    if (window.matchMedia('(hover: none)').matches) {
+  const clickToggle = (e: React.MouseEvent | MouseEvent) => {
+    if (isMobile()) {
       e.stopPropagation();
+      if (!isOpen) adjust();
       setIsOpen((o) => !o);
+    }
+  };
+
+  const hoverOpen = () => {
+    if (!isMobile()) {
+      adjust();
+      setIsOpen(true);
+    }
+  };
+
+  const hoverClose = () => {
+    if (!isMobile()) {
+      setIsOpen(false);
     }
   };
 
@@ -49,15 +69,15 @@ export function Tooltip({ trigger, children }: TooltipProps) {
     <div
       ref={wrapperRef}
       className="relative group inline-flex"
-      onMouseEnter={adjust}
-      onFocus={adjust}
-      onClick={handleClick}
+      onMouseEnter={hoverOpen}
+      onMouseLeave={hoverClose}
+      onClick={clickToggle}
     >
       {trigger}
       <div
         ref={tooltipRef}
         style={{ transform: `translateX(${offsetX}px)` }}
-        className={`invisible group-hover:visible absolute z-50 top-full left-0 p-2 bg-neutral-900 rounded-lg shadow-xl border border-gray-700 ${
+        className={`absolute z-50 top-full left-0 p-2 bg-neutral-900 rounded-lg shadow-xl border border-gray-700 ${
           isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}
       >

@@ -8,24 +8,34 @@ import {
 import { clientSupabase, getUser } from '@/db/supabase/client';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tooltip } from './Tooltip';
 
 export default function AvatarMenu() {
   const router = useRouter();
   const supabase = clientSupabase();
-  const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<ProfileWithAchievements | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    document.addEventListener('click', handleClick);
+    const handleOutsideClick = (e: MouseEvent) => {
+      const wrapper = wrapperRef.current;
+      const target = e.target as Node;
 
-    return () => document.removeEventListener('click', handleClick);
+      if (wrapper && wrapper.contains(target)) return;
+
+      setIsOpen(false);
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
   }, [isOpen]);
 
-  const handleClick = (e: React.MouseEvent | MouseEvent) => {
+  const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsOpen((o) => !o);
   };
@@ -48,13 +58,13 @@ export default function AvatarMenu() {
       .from('profiles')
       .select(
         `*, 
-          achievements(
-            id,
-            userId:user_id,
-            createdAt:created_at,
-            simulationId:simulation_id,
-            badgeType:badge_type
-          )`
+            achievements(
+              id,
+              userId:user_id,
+              createdAt:created_at,
+              simulationId:simulation_id,
+              badgeType:badge_type
+            )`
       )
       .eq('user_id', authUser.id)
       .single();
@@ -86,7 +96,7 @@ export default function AvatarMenu() {
   if (!user) return null;
 
   return (
-    <div className="relative">
+    <div ref={wrapperRef} className="relative">
       <button
         className="flex items-center rounded-full hover:ring-2 hover:ring-gray-200 transition-all cursor-pointer"
         onClick={handleClick}
