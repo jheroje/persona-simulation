@@ -252,7 +252,7 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
         <button
           type="submit"
           disabled={isProcessing}
-          className="bg-teal-500 hover:bg-teal-600 text-gray-100 font-bold py-3 px-6 rounded-lg disabled:opacity-50 w-full sm:w-auto"
+          className="bg-teal-500 hover:bg-teal-600 text-gray-100 font-bold py-3 px-6 rounded-lg disabled:opacity-50 w-full sm:w-auto cursor-pointer"
         >
           Send
         </button>

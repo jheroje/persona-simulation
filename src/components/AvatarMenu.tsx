@@ -17,6 +17,19 @@ export default function AvatarMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<ProfileWithAchievements | null>(null);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    document.addEventListener('click', handleClick);
+
+    return () => document.removeEventListener('click', handleClick);
+  }, [isOpen]);
+
+  const handleClick = (e: React.MouseEvent | MouseEvent) => {
+    e.stopPropagation();
+    setIsOpen((o) => !o);
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -76,7 +89,7 @@ export default function AvatarMenu() {
     <div className="relative">
       <button
         className="flex items-center rounded-full hover:ring-2 hover:ring-gray-200 transition-all cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleClick}
       >
         <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
           <span className="text-sm font-medium text-gray-600">
