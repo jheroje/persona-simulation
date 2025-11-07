@@ -173,7 +173,7 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
 
   return (
     <div className="flex flex-col h-[85vh] bg-neutral-800 border border-gray-600 rounded-lg shadow-lg">
-      <div className="flex items-center justify-between p-4 bg-neutral-700 border-b border-gray-700 rounded-t-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-neutral-700 border-b border-gray-700 rounded-t-lg gap-3">
         <div className="flex items-center gap-4">
           <div>
             <Tooltip
@@ -185,7 +185,7 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
             >
               <PersonaDetails persona={simulation.persona} />
             </Tooltip>
-            <div className="flex gap-2 mt-1">
+            <div className="flex flex-wrap gap-1 mt-1">
               <ScenarioTag
                 text={`Call ID: ${simulation.scenarioContext.callId}`}
               />
@@ -224,7 +224,7 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
             }`}
           >
             <div
-              className={`max-w-xs p-3 rounded-xl ${
+              className={`max-w-[80%] sm:max-w-xs p-3 rounded-xl ${
                 msg.sender === 'user'
                   ? 'bg-teal-500 text-gray-100 rounded-br-none'
                   : 'bg-neutral-600 text-gray-100 rounded-bl-none'
@@ -239,7 +239,7 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
 
       <form
         onSubmit={handleSendMessage}
-        className="p-4 border-t border-gray-700 flex space-x-2"
+        className="p-3 border-t border-gray-700 flex flex-col sm:flex-row gap-2"
       >
         <input
           type="text"
@@ -247,12 +247,12 @@ export default function ChatInterface({ simulation }: ChatInterfaceProps) {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your user response..."
           disabled={isProcessing}
-          className="flex-1 p-3 border border-gray-600 bg-neutral-700 text-gray-100 rounded-lg focus:ring-teal-500 focus:border-teal-500 disabled:bg-neutral-700 placeholder-gray-400"
+          className="flex-1 p-3 border border-gray-600 bg-neutral-700 text-gray-100 rounded-lg focus:ring-teal-500 focus:border-teal-500 disabled:bg-neutral-700 placeholder-gray-400 w-full"
         />
         <button
           type="submit"
           disabled={isProcessing}
-          className="bg-teal-500 hover:bg-teal-600 text-gray-100 font-bold py-3 px-6 rounded-lg disabled:opacity-50"
+          className="bg-teal-500 hover:bg-teal-600 text-gray-100 font-bold py-3 px-6 rounded-lg disabled:opacity-50 w-full sm:w-auto"
         >
           Send
         </button>

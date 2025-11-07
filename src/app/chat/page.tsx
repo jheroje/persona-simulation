@@ -25,8 +25,8 @@ export default async function SimulationsPage() {
   });
 
   return (
-    <div className="flex flex-col h-full p-6">
-      <h1 className="text-3xl font-bold mb-4">Persona Simulation</h1>
+    <div className="flex flex-col h-full py-4 px-2">
+      <h1 className="text-3xl font-bold py-1 mb-4">Persona Simulation</h1>
 
       {activeSimulation ? (
         <ChatInterface

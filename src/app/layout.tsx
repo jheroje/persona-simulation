@@ -29,10 +29,16 @@ export default function RootLayout({
     <ToastProvider>
       <LoadingProvider>
         <html lang="en">
+          <head>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
+          </head>
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           >
-            <header className="fixed top-5 right-5 z-50">
+            <header className="fixed top-4 right-5 z-50">
               <AvatarMenu />
             </header>
             {children}

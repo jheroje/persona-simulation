@@ -69,7 +69,7 @@ export default function EndSimulationButton({
       <button
         onClick={handleEndSimulation}
         disabled={isLoading}
-        className="bg-rose-500 hover:bg-rose-600  text-white font-bold py-3 px-6 rounded-lg text-lg disabled:opacity-50 transition-colors cursor-pointer"
+        className="bg-rose-500 hover:bg-rose-600  text-white font-bold py-2 px-3 rounded-lg text-sm disabled:opacity-50 transition-colors cursor-pointer"
       >
         {isLoading ? 'Ending...' : 'End Simulation'}
       </button>
