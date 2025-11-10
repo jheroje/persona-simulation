@@ -1,9 +1,5 @@
 # Persona Simulation
 
-## App URL
-
-https://persona-simulation.vercel.app
-
 ## How to run locally
 
 ### Prerequisites
@@ -96,23 +92,3 @@ npm run dev
 | John Doe      | Customer Service Representative | Friendly and practical | Support person for billing issues, appointments and information requests. Helps the user.    |
 | Jane Smith    | Technical Support Specialist    | Calm and analytical    | Technical person for connection, accounts and performance issues. Helps the user.            |
 | Lisa Peterson | Customer                        | Anxious and reactive   | Customer that asks for refunds, delays and other order/shipment issues. The user helps Lisa. |
-
-## Implemented extension
-
-### Extension chosen
-
-Simulation assessment: After each run, show concise feedback based on simple criteria you define (e.g., greeting/verification, clarity, empathy, probing, resolution, time to resolve). A rule‑based checklist/score is sufficient. Bonus: add light gamification—e.g., achievements/badges, streaks, or progress tiers.
-
-### Why
-
-I think feedback and gamification are a very interesting addition to this project. Feedback lets the user know what went well and what could be improved, and achievements keep the user engaged.
-
-## Known limitations, what I have done with more time
-
-- I would have polished the design a little bit more, as it is very simple as it is right now.
-- Lots of room to shave bits of performance and improve UX.
-- Add some simulation flow testing.
-- Improve feedback criteria, add more achievements, add a different icon for each achievement, etc.
-- Add different environments (test/dev, staging, etc)
-- CI/CD (light lint and test jobs before deployment)
-- I also would have loved to implement more extensions as most of them seem really interesting and useful!
